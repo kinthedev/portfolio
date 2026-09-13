@@ -34,6 +34,9 @@ document.addEventListener("DOMContentLoaded", () => {
 		intro.classList.add("hidden-intro")
 	}
 
+	const mobileMenuToggle = document.querySelector(".mobile-menu-toggle")
+	const mobileNav = document.querySelector(".top-nav")
+
 	const setActiveNav = () => {
 		const offset = window.scrollY + 140
 		let currentId = "home"
@@ -45,6 +48,22 @@ document.addEventListener("DOMContentLoaded", () => {
 		navLinks.forEach((link) => {
 			const isCurrent = link.getAttribute("href") === `#${currentId}`
 			link.classList.toggle("active", isCurrent)
+		})
+	}
+
+	const toggleMobileNav = () => {
+		if (!mobileNav || !mobileMenuToggle) return
+		const isOpen = mobileNav.classList.toggle("is-open")
+		mobileMenuToggle.setAttribute("aria-expanded", String(isOpen))
+	}
+
+	if (mobileMenuToggle && mobileNav) {
+		mobileMenuToggle.addEventListener("click", toggleMobileNav)
+		mobileNav.querySelectorAll("a").forEach((link) => {
+			link.addEventListener("click", () => {
+				mobileNav.classList.remove("is-open")
+				mobileMenuToggle.setAttribute("aria-expanded", "false")
+			})
 		})
 	}
 
@@ -768,31 +787,25 @@ document.addEventListener("DOMContentLoaded", () => {
 		const soundBtn = document.getElementById("mini-sound-btn")
 		const miniGameSection = document.getElementById("play")
 		const brand = document.querySelector(".brand")
-		let bestScore = Number(localStorage.getItem("kin-mini-best") || 0)
+		let bestScore = Number(localStorage.getItem("kin-memory-best") || 0)
 		let soundOn = true
 		let isPlaying = false
 		let gameOver = false
 		let animationFrame = null
 		let score = 0
 		let lastTime = 0
-		let spawnTimer = 0
 		let secretClicks = 0
-		const pointer = {
-			x: miniGameCanvas.width * 0.5,
-			y: miniGameCanvas.height - 32,
-		}
-		const player = {
-			x: miniGameCanvas.width * 0.5,
-			y: miniGameCanvas.height - 30,
-			radius: 12,
-			speed: 330,
-		}
-		const obstacles = []
-		const stars = Array.from({ length: 28 }, () => ({
-			x: Math.random() * miniGameCanvas.width,
-			y: Math.random() * miniGameCanvas.height,
-			r: Math.random() * 2 + 1,
-			o: Math.random() * 0.7 + 0.3,
+		let sequence = []
+		let playerIndex = 0
+		let isShowingSequence = false
+		let sequenceTimer = null
+		const gridSize = 3
+		const board = Array.from({ length: gridSize * gridSize }, (_, index) => ({
+			index,
+			active: false,
+			pulse: 0,
+			row: Math.floor(index / gridSize),
+			col: index % gridSize,
 		}))
 
 		const setBestScore = () => {
@@ -804,187 +817,200 @@ document.addEventListener("DOMContentLoaded", () => {
 			if (statusEl) statusEl.textContent = message
 		}
 
-		const playBeep = () => {
+		const playTone = (frequency, duration, volume = 0.04, type = "sine") => {
 			if (!soundOn || !window.AudioContext) return
 			const audioContext = new (window.AudioContext || window.webkitAudioContext)()
 			const oscillator = audioContext.createOscillator()
 			const gain = audioContext.createGain()
-			oscillator.type = "triangle"
-			oscillator.frequency.value = 180
-			gain.gain.value = 0.02
+			oscillator.type = type
+			oscillator.frequency.value = frequency
+			gain.gain.value = volume
 			oscillator.connect(gain)
 			gain.connect(audioContext.destination)
 			oscillator.start()
-			oscillator.stop(audioContext.currentTime + 0.06)
+			oscillator.stop(audioContext.currentTime + duration)
 		}
 
-		const spawnObstacle = () => {
-			const size = 12 + Math.random() * 12
-			const x = 30 + Math.random() * (miniGameCanvas.width - 60)
-			const y = -30
-			obstacles.push({
-				x,
-				y,
-				size,
-				speed: 120 + Math.random() * 130,
-				drift: (Math.random() - 0.5) * 120,
-				rotation: Math.random() * Math.PI * 2,
+		const playSuccessSound = () => playTone(480, 0.08, 0.025, "triangle")
+		const playFailSound = () => playTone(160, 0.18, 0.04, "sawtooth")
+
+		const resetBoardState = () => {
+			board.forEach((cell) => {
+				cell.active = false
+				cell.pulse = 0
 			})
+		}
+
+		const triggerCell = (cellIndex, duration = 260) => {
+			const cell = board[cellIndex]
+			if (!cell) return
+			cell.active = true
+			cell.pulse = 1
+			playTone(300 + cellIndex * 30, 0.09, 0.018, "square")
+			window.setTimeout(() => {
+				cell.active = false
+				cell.pulse = 0
+			}, duration)
+		}
+
+		const startRound = () => {
+			if (!isPlaying || gameOver) return
+			const nextIndex = Math.floor(Math.random() * board.length)
+			sequence.push(nextIndex)
+			score = sequence.length - 1
+			if (scoreEl) scoreEl.textContent = String(score)
+			playerIndex = 0
+			isShowingSequence = true
+			setStatus("Watch the signal...")
+
+			const animateSequence = (index = 0) => {
+				if (!isPlaying || gameOver) return
+				triggerCell(sequence[index], 360)
+				if (index < sequence.length - 1) {
+					sequenceTimer = window.setTimeout(() => animateSequence(index + 1), 480)
+					return
+				}
+				sequenceTimer = window.setTimeout(() => {
+					isShowingSequence = false
+					setStatus("Repeat the pattern.")
+				}, 520)
+			}
+
+			animateSequence()
 		}
 
 		const resetGame = () => {
 			score = 0
 			if (scoreEl) scoreEl.textContent = "0"
-			obstacles.length = 0
-			spawnTimer = 0
+			sequence = []
+			playerIndex = 0
 			gameOver = false
 			isPlaying = true
-			lastTime = 0
-			player.x = miniGameCanvas.width * 0.5
-			player.y = miniGameCanvas.height - 30
-			pointer.x = player.x
-			pointer.y = player.y
-			setStatus("Survive the signal.")
+			isShowingSequence = false
+			resetBoardState()
+			if (sequenceTimer) {
+				window.clearTimeout(sequenceTimer)
+				sequenceTimer = null
+			}
+			setStatus("Watch the signal...")
 			if (playBtn) playBtn.textContent = "Restart"
+			window.setTimeout(() => startRound(), 250)
 		}
 
 		const endGame = () => {
 			if (gameOver) return
 			gameOver = true
 			isPlaying = false
-			bestScore = Math.max(bestScore, Math.floor(score))
-			localStorage.setItem("kin-mini-best", String(bestScore))
+			bestScore = Math.max(bestScore, score)
+			localStorage.setItem("kin-memory-best", String(bestScore))
 			setBestScore()
 			const messages = [
-				"Not bad.",
-				"Okay, you got me.",
-				"One more try?",
-				"Your debugging skills are improving.",
+				"Pattern missed.",
+				"Signal lost.",
+				"Try the next loop.",
+				"You were close.",
 			]
 			setStatus(
-				`${messages[Math.floor(Math.random() * messages.length)]} Final score ${Math.floor(score)}.`,
+				`${messages[Math.floor(Math.random() * messages.length)]} Final score ${score}.`,
 			)
 			if (playBtn) playBtn.textContent = "Play again"
-			playBeep()
+			playFailSound()
 		}
 
-		const drawBackground = () => {
-			ctx.clearRect(0, 0, miniGameCanvas.width, miniGameCanvas.height)
-			const gradient = ctx.createRadialGradient(
-				miniGameCanvas.width * 0.5,
-				miniGameCanvas.height * 0.4,
-				30,
-				miniGameCanvas.width * 0.5,
-				miniGameCanvas.height * 0.5,
-				340,
-			)
-			gradient.addColorStop(0, "rgba(73, 71, 129, 0.26)")
-			gradient.addColorStop(1, "rgba(9, 12, 18, 0.96)")
-			ctx.fillStyle = gradient
-			ctx.fillRect(0, 0, miniGameCanvas.width, miniGameCanvas.height)
+		const handleCellInput = (cellIndex) => {
+			if (!isPlaying || isShowingSequence || gameOver) return
+			const expectedIndex = sequence[playerIndex]
+			const cell = board[cellIndex]
+			if (!cell) return
+			cell.active = true
+			cell.pulse = 1
+			window.setTimeout(() => {
+				cell.active = false
+				cell.pulse = 0
+			}, 180)
 
-			stars.forEach((star) => {
-				ctx.fillStyle = `rgba(255,255,255,${star.o})`
-				ctx.beginPath()
-				ctx.arc(star.x, star.y, star.r, 0, Math.PI * 2)
-				ctx.fill()
-			})
+			if (cellIndex === expectedIndex) {
+				playSuccessSound()
+				playerIndex += 1
+				if (playerIndex === sequence.length) {
+					if (scoreEl) scoreEl.textContent = String(sequence.length)
+					score = sequence.length
+					setStatus("Nice. Next pattern incoming.")
+					window.setTimeout(() => startRound(), 700)
+				}
+				return
+			}
+
+			endGame()
 		}
 
-		const drawPlayer = () => {
-			ctx.beginPath()
-			ctx.arc(player.x, player.y, player.radius + 8, 0, Math.PI * 2)
-			ctx.fillStyle = "rgba(244, 116, 74, 0.2)"
-			ctx.fill()
+		const drawBoard = () => {
+			const boardSize = 190
+			const gap = 14
+			const cellSize = (boardSize - gap * 2) / 3
+			const boardX = (miniGameCanvas.width - boardSize) / 2
+			const boardY = 42
 
+			ctx.fillStyle = "rgba(22, 28, 36, 0.8)"
+			ctx.strokeStyle = "rgba(255,255,255,0.12)"
+			ctx.lineWidth = 1.5
 			ctx.beginPath()
-			ctx.arc(player.x, player.y, player.radius, 0, Math.PI * 2)
-			ctx.fillStyle = "#f4c6ad"
-			ctx.shadowColor = "rgba(244, 116, 74, 0.85)"
-			ctx.shadowBlur = 20
+			ctx.roundRect(boardX - 12, boardY - 12, boardSize + 24, boardSize + 24, 18)
 			ctx.fill()
-			ctx.shadowBlur = 0
-
-			ctx.beginPath()
-			ctx.moveTo(player.x - 6, player.y + 10)
-			ctx.lineTo(player.x, player.y - 12)
-			ctx.lineTo(player.x + 6, player.y + 10)
-			ctx.closePath()
-			ctx.strokeStyle = "rgba(18, 20, 26, 0.7)"
-			ctx.lineWidth = 2
 			ctx.stroke()
-		}
 
-		const drawObstacles = () => {
-			obstacles.forEach((obstacle) => {
-				const x = obstacle.x
-				const y = obstacle.y
+			board.forEach((cell) => {
+				const x = boardX + cell.col * (cellSize + gap)
+				const y = boardY + cell.row * (cellSize + gap)
+				const glow = cell.pulse > 0 ? 18 + cell.pulse * 22 : 0
 				ctx.save()
-				ctx.translate(x, y)
-				ctx.rotate(obstacle.rotation)
-				ctx.strokeStyle = "rgba(185, 142, 247, 0.8)"
-				ctx.lineWidth = 1.5
+				ctx.shadowColor = cell.active
+					? "rgba(92, 220, 255, 0.9)"
+					: "rgba(255,255,255,0.08)"
+				ctx.shadowBlur = glow
+				ctx.fillStyle = cell.active
+					? "rgba(105, 230, 255, 0.9)"
+					: "rgba(13, 18, 24, 0.9)"
+				ctx.strokeStyle = cell.active
+					? "rgba(180, 244, 255, 0.95)"
+					: "rgba(255,255,255,0.12)"
 				ctx.beginPath()
-				ctx.moveTo(-obstacle.size, 0)
-				ctx.lineTo(obstacle.size, 0)
-				ctx.moveTo(0, -obstacle.size)
-				ctx.lineTo(0, obstacle.size)
+				ctx.roundRect(x, y, cellSize, cellSize, 16)
+				ctx.fill()
 				ctx.stroke()
-				ctx.fillStyle = "rgba(255,255,255,0.5)"
-				ctx.font = "12px monospace"
-				ctx.textAlign = "center"
-				ctx.fillText("</>", 0, 4)
 				ctx.restore()
 			})
 		}
 
 		const render = () => {
-			drawBackground()
-			drawObstacles()
-			drawPlayer()
+			ctx.clearRect(0, 0, miniGameCanvas.width, miniGameCanvas.height)
+			const bg = ctx.createLinearGradient(0, 0, 0, miniGameCanvas.height)
+			bg.addColorStop(0, "#0b1118")
+			bg.addColorStop(0.7, "#111a22")
+			bg.addColorStop(1, "#0a0d12")
+			ctx.fillStyle = bg
+			ctx.fillRect(0, 0, miniGameCanvas.width, miniGameCanvas.height)
+
+			ctx.fillStyle = "rgba(149, 197, 255, 0.1)"
+			ctx.beginPath()
+			ctx.arc(92, 60, 28, 0, Math.PI * 2)
+			ctx.fill()
+			ctx.beginPath()
+			ctx.arc(540, 70, 20, 0, Math.PI * 2)
+			ctx.fill()
+
+			drawBoard()
 		}
 
 		const update = (dt) => {
-			if (!isPlaying) return
-			score += dt * 18
-			if (scoreEl) scoreEl.textContent = String(Math.floor(score))
-			spawnTimer += dt
-			if (spawnTimer > 0.75) {
-				spawnObstacle()
-				spawnTimer = 0
-			}
-
-			const dx = pointer.x - player.x
-			const dy = pointer.y - player.y
-			const distance = Math.hypot(dx, dy) || 1
-			const step = Math.min(player.speed * dt, distance)
-			player.x += (dx / distance) * step
-			player.y += (dy / distance) * step
-			player.x = Math.min(
-				Math.max(player.x, player.radius + 10),
-				miniGameCanvas.width - player.radius - 10,
-			)
-			player.y = Math.min(
-				Math.max(player.y, player.radius + 12),
-				miniGameCanvas.height - player.radius - 10,
-			)
-
-			for (let i = obstacles.length - 1; i >= 0; i -= 1) {
-				const obstacle = obstacles[i]
-				obstacle.y += obstacle.speed * dt
-				obstacle.x += obstacle.drift * dt
-				obstacle.rotation += dt * 3
-				const hit =
-					Math.hypot(obstacle.x - player.x, obstacle.y - player.y) <
-					obstacle.size + player.radius
-				if (hit) {
-					endGame()
-					break
+			board.forEach((cell) => {
+				if (cell.pulse > 0) {
+					cell.pulse = Math.max(0, cell.pulse - dt * 2.2)
+					if (cell.pulse === 0) {
+						cell.active = false
+					}
 				}
-				if (obstacle.y > miniGameCanvas.height + 30) {
-					obstacles.splice(i, 1)
-				}
-			}
+			})
 		}
 
 		const tick = (timestamp) => {
@@ -1009,15 +1035,39 @@ document.addEventListener("DOMContentLoaded", () => {
 			})
 		}
 
-		miniGameCanvas.addEventListener("pointermove", (event) => {
+		miniGameCanvas.addEventListener("pointerdown", (event) => {
+			event.preventDefault()
 			const rect = miniGameCanvas.getBoundingClientRect()
-			pointer.x = ((event.clientX - rect.left) / rect.width) * miniGameCanvas.width
-			pointer.y =
-				((event.clientY - rect.top) / rect.height) * miniGameCanvas.height
+			const x = (event.clientX - rect.left) * (miniGameCanvas.width / rect.width)
+			const y = (event.clientY - rect.top) * (miniGameCanvas.height / rect.height)
+			const boardSize = 190
+			const gap = 14
+			const cellSize = (boardSize - gap * 2) / 3
+			const boardX = (miniGameCanvas.width - boardSize) / 2
+			const boardY = 42
+			const localX = x - boardX
+			const localY = y - boardY
+			if (localX < 0 || localY < 0 || localX > boardSize || localY > boardSize)
+				return
+			const col = Math.min(
+				gridSize - 1,
+				Math.max(0, Math.floor(localX / (cellSize + gap))),
+			)
+			const row = Math.min(
+				gridSize - 1,
+				Math.max(0, Math.floor(localY / (cellSize + gap))),
+			)
+			const cellIndex = row * gridSize + col
+			handleCellInput(cellIndex)
 		})
 
-		miniGameCanvas.addEventListener("pointerdown", () => {
-			if (!isPlaying) resetGame()
+		document.addEventListener("keydown", (event) => {
+			if (event.code.startsWith("Digit")) {
+				const index = Number(event.code.replace("Digit", "")) - 1
+				if (index >= 0 && index < board.length) {
+					handleCellInput(index)
+				}
+			}
 		})
 
 		if (miniGameSection) {
@@ -1025,7 +1075,7 @@ document.addEventListener("DOMContentLoaded", () => {
 				(entries) => {
 					const entry = entries[0]
 					if (!entry.isIntersecting && isPlaying) {
-						setStatus("Paused — back in view to keep playing.")
+						setStatus("Paused — back in view to keep the signal alive.")
 						isPlaying = false
 					}
 					if (entry.isIntersecting && !isPlaying && !gameOver) {
@@ -1178,12 +1228,12 @@ document.addEventListener("DOMContentLoaded", () => {
 	const audioElement = new Audio("audio/Boy.mp3")
 	audioElement.preload = "auto"
 	audioElement.loop = true
-	audioElement.autoplay = true
+	audioElement.autoplay = false
 	audioElement.volume = Number(volumeSlider.value) / 100
 	audioState.audio = audioElement
 
 	const attemptAutoPlay = () => {
-		resumeAudio().catch(() => {})
+		// Explicit user interaction is required before playing music.
 	}
 
 	musicToggle.addEventListener("click", togglePlayback)
@@ -1231,9 +1281,7 @@ document.addEventListener("DOMContentLoaded", () => {
 		bar.style.height = "12%"
 		bar.style.opacity = "0.45"
 	})
-	attemptAutoPlay()
-	window.addEventListener("pointerdown", attemptAutoPlay, { once: true })
-	window.addEventListener("keydown", attemptAutoPlay, { once: true })
+	if (musicToggle) musicToggle.textContent = "Play"
 	if (musicPlayer) {
 		musicPlayer.addEventListener(
 			"pointerdown",
