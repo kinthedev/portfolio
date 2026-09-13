@@ -1,0 +1,553 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta
+			name="description"
+			content="KIN — Full-stack developer building cinematic digital experiences, systems, and interaction design." />
+		<title>KIN — Creative Developer</title>
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Cormorant+Garamond:wght@500;600;700&display=swap"
+			rel="stylesheet" />
+		<link rel="stylesheet" href="style.css" />
+	</head>
+	<body>
+		<div class="noise" aria-hidden="true"></div>
+		<div class="page-glow" aria-hidden="true"></div>
+		<div class="custom-cursor" aria-hidden="true">
+			<span class="cursor-dot"></span>
+		</div>
+
+		<div class="intro" aria-live="polite">
+			<div class="intro-grid" aria-hidden="true"></div>
+			<div class="intro-word" aria-label="KIN">
+				<span>K</span>
+				<span>I</span>
+				<span>N</span>
+			</div>
+			<div class="intro-meta">signal initialized</div>
+		</div>
+
+		<header class="site-header">
+			<div class="brand-wrap">
+				<a href="#home" class="brand" aria-label="KIN home">KIN</a>
+			</div>
+
+			<nav class="top-nav" aria-label="Main navigation">
+				<a href="#about">About</a>
+				<a href="#stack">Stack</a>
+				<a href="#work">Work</a>
+				<a href="#focus">Focus</a>
+				<a href="#github">GitHub</a>
+				<a href="#play">Contact</a>
+				<a href="#contact">Contact</a>
+			</nav>
+
+			<a href="#contact" class="nav-cta">Connect</a>
+		</header>
+
+		<main>
+			<section class="hero section" id="home" aria-label="Introductory experience">
+				<div class="hero-canvas-wrap">
+					<canvas
+						id="hero-canvas"
+						aria-label="Abstract 3D visual background"></canvas>
+				</div>
+
+				<div class="hero-copy">
+					<p class="eyebrow">
+						Full-stack developer / product builder / visual engineer
+					</p>
+					<h1>KIN</h1>
+					<p class="position-line">
+						I design and build full-stack digital products from interface concept to
+						API layer, motion system, and deployment — with a strong focus on clarity,
+						performance, and memorable experience.
+					</p>
+
+					<div class="hero-actions">
+						<a href="#work" class="primary-button">Explore work</a>
+						<a href="#contact" class="secondary-button">Start a project</a>
+					</div>
+
+					<ul class="social-row" aria-label="Social links">
+						<li>
+							<a href="https://github.com/kinthedev" target="_blank" rel="noreferrer"
+								>GitHub</a
+							>
+						</li>
+						<li>
+							<a href="https://www.linkedin.com" target="_blank" rel="noreferrer"
+								>LinkedIn</a
+							>
+						</li>
+						<li>
+							<a href="https://dribbble.com" target="_blank" rel="noreferrer"
+								>Dribbble</a
+							>
+						</li>
+						<li><a href="mailto:hello@kin.dev">Email</a></li>
+					</ul>
+				</div>
+
+				<div class="hero-meta">
+					<div class="meta-block">
+						<span class="meta-label">Focus</span>
+						<span class="meta-value">JavaScript / TypeScript / Full-stack</span>
+					</div>
+					<div class="meta-block">
+						<span class="meta-label">Current</span>
+						<span class="meta-value">Crafting interfaces, APIs, and products</span>
+					</div>
+				</div>
+			</section>
+
+			<section class="about section" id="about">
+				<div class="section-index">01 / About</div>
+
+				<div class="about-grid">
+					<div class="about-copy reveal-block">
+						<p class="section-kicker">Identity</p>
+						<h2>
+							I’m a full-stack developer crafting products that feel as strong as they
+							perform.
+						</h2>
+						<p>
+							I work across product strategy, interface design, front-end engineering,
+							and backend architecture to build experiences that are useful,
+							responsive, and emotionally memorable.
+						</p>
+						<p>
+							From concept and UX flow to JavaScript systems, database logic, and
+							deployment, I enjoy turning ideas into polished digital products that
+							feel considered at every layer.
+						</p>
+					</div>
+
+					<aside class="about-panel reveal-block" aria-label="Personal details">
+						<div class="panel-row">
+							<span class="panel-label">Based</span>
+							<span>Remote / Worldwide</span>
+						</div>
+						<div class="panel-row">
+							<span class="panel-label">Builds</span>
+							<span>Products, interfaces, tooling, experiences</span>
+						</div>
+						<div class="panel-row">
+							<span class="panel-label">Interests</span>
+							<span>Creative coding, systems design, interaction, product craft</span>
+						</div>
+						<div class="panel-row">
+							<span class="panel-label">Philosophy</span>
+							<span
+								>Make it useful, make it feel alive, make it worth remembering</span
+							>
+						</div>
+					</aside>
+				</div>
+			</section>
+
+			<section class="stack section" id="stack">
+				<div class="section-index">02 / Stack</div>
+
+				<div class="stack-layout reveal-block">
+					<div class="stack-header">
+						<p class="section-kicker">Tooling</p>
+						<h2>TECH STACK</h2>
+						<p>Technologies I use to build digital products.</p>
+					</div>
+
+					<div class="stack-visual" aria-label="Technology groups">
+						<div class="tech-scene">
+							<canvas
+								id="tech-orbit-canvas"
+								aria-label="Interactive 3D technology orbit"></canvas>
+							<div class="tech-info" id="tech-info" aria-live="polite">
+								<div class="tech-info-header">
+									<div class="tech-icon" id="tech-icon"></div>
+									<div>
+										<p class="tech-label">Selected</p>
+										<h3 id="tech-name">TypeScript</h3>
+									</div>
+								</div>
+								<p class="tech-category" id="tech-category">Frontend / Backend</p>
+								<p class="tech-description" id="tech-description">
+									Used for type-safe application development.
+								</p>
+								<div class="tech-related">
+									<span>Related</span>
+									<div id="tech-related"></div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
+
+			<section class="capabilities section" id="capabilities">
+				<div class="section-index">03 / Capabilities</div>
+				<div class="capability-grid reveal-block">
+					<article class="capability-card">
+						<p class="section-kicker">Product</p>
+						<h3>Product systems</h3>
+						<p>
+							UX flow design, product thinking, roadmap framing, conversion-focused
+							interaction patterns.
+						</p>
+					</article>
+					<article class="capability-card">
+						<p class="section-kicker">Frontend</p>
+						<h3>Interface craft</h3>
+						<p>
+							High-end front-end engineering, motion design, data visualization,
+							responsive systems, and polished UI logic.
+						</p>
+					</article>
+					<article class="capability-card">
+						<p class="section-kicker">Backend</p>
+						<h3>Reliable build</h3>
+						<p>
+							APIs, authentication, database architecture, performance tuning,
+							deployment, and maintainable business logic.
+						</p>
+					</article>
+				</div>
+			</section>
+
+			<section class="work section" id="work">
+				<div class="section-index">04 / Selected work</div>
+
+				<article class="project reveal-block project-one">
+					<div class="project-copy">
+						<p class="project-number">Project 01</p>
+						<h3>Signal Forge</h3>
+						<p>
+							An experimental product environment for teams managing live operational
+							insight, creative systems, and rapid product decisions.
+						</p>
+						<ul class="project-meta-list">
+							<li><span>Stack</span> React / Node / Postgres</li>
+							<li><span>Role</span> Product design / full-stack build</li>
+							<li><span>Year</span> 2026</li>
+						</ul>
+						<div class="project-links">
+							<a href="#" aria-label="Live demo for Signal Forge">Live demo</a>
+							<a href="#" aria-label="GitHub repository for Signal Forge">GitHub</a>
+						</div>
+					</div>
+
+					<div class="project-visual project-visual-one" aria-hidden="true">
+						<div class="visual-frame visual-frame-a"></div>
+						<div class="visual-frame visual-frame-b"></div>
+						<div class="visual-surface"></div>
+					</div>
+				</article>
+
+				<article class="project reveal-block project-two">
+					<div class="project-copy">
+						<p class="project-number">Project 02</p>
+						<h3>Night Circuit</h3>
+						<p>
+							A high-contrast media system blending interactive storytelling, motion
+							design, and modular publishing for an independent digital brand.
+						</p>
+						<ul class="project-meta-list">
+							<li><span>Stack</span> TypeScript / Express / MongoDB</li>
+							<li><span>Role</span> Front-end architecture / CMS layer</li>
+							<li><span>Year</span> 2025</li>
+						</ul>
+						<div class="project-links">
+							<a href="#" aria-label="Live demo for Night Circuit">Live demo</a>
+							<a href="#" aria-label="GitHub repository for Night Circuit">GitHub</a>
+						</div>
+					</div>
+
+					<div class="project-visual project-visual-two" aria-hidden="true">
+						<div class="visual-column"></div>
+						<div class="visual-glow"></div>
+						<div class="visual-overline"></div>
+					</div>
+				</article>
+
+				<article class="project reveal-block project-three">
+					<div class="project-copy">
+						<p class="project-number">Project 03</p>
+						<h3>Orbit Ledger</h3>
+						<p>
+							A clean operational dashboard for tracing workflows, metrics, and team
+							signals while preserving a rich, low-noise visual language.
+						</p>
+						<ul class="project-meta-list">
+							<li><span>Stack</span> Next.js / Prisma / PostgreSQL</li>
+							<li><span>Role</span> Interface design / data layer</li>
+							<li><span>Year</span> 2024</li>
+						</ul>
+						<div class="project-links">
+							<a href="#" aria-label="Live demo for Orbit Ledger">Live demo</a>
+							<a href="#" aria-label="GitHub repository for Orbit Ledger">GitHub</a>
+						</div>
+					</div>
+
+					<div class="project-visual project-visual-three" aria-hidden="true">
+						<div class="chart-grid"></div>
+						<div class="chart-line"></div>
+						<div class="chart-dot dot-one"></div>
+						<div class="chart-dot dot-two"></div>
+						<div class="chart-dot dot-three"></div>
+					</div>
+				</article>
+			</section>
+
+			<section class="process section" id="process">
+				<div class="section-index">05 / Process</div>
+				<div class="process-grid reveal-block">
+					<div class="process-step">
+						<span>01</span>
+						<h3>Discover</h3>
+						<p>
+							Clarify the problem, user behavior, constraints, and the product signal
+							worth solving.
+						</p>
+					</div>
+					<div class="process-step">
+						<span>02</span>
+						<h3>Design</h3>
+						<p>
+							Shape the experience with interface clarity, motion rhythm, and product
+							intent.
+						</p>
+					</div>
+					<div class="process-step">
+						<span>03</span>
+						<h3>Build</h3>
+						<p>
+							Ship durable frontend systems, API flows, and infrastructure with
+							measurable quality.
+						</p>
+					</div>
+				</div>
+			</section>
+
+			<section class="focus section" id="focus">
+				<div class="section-index">06 / Current focus</div>
+				<div class="focus-grid reveal-block">
+					<div class="focus-copy">
+						<p class="section-kicker">Exploring</p>
+						<h2>
+							Current work is focused on systems, tooling, and better digital products.
+						</h2>
+					</div>
+					<div class="focus-list">
+						<div>
+							<span>Frontend engineering</span
+							><small>interface systems and motion</small>
+						</div>
+						<div>
+							<span>Backend architecture</span
+							><small>APIs, product systems, integrations</small>
+						</div>
+						<div>
+							<span>Creative web</span
+							><small>Three.js, interaction, storytelling</small>
+						</div>
+						<div>
+							<span>Product thinking</span
+							><small>useful, polished, measurable work</small>
+						</div>
+					</div>
+				</div>
+			</section>
+
+			<section class="github section" id="github">
+				<div class="section-index">07 / GitHub</div>
+
+				<div class="github-shell reveal-block">
+					<div class="github-header">
+						<div>
+							<p class="section-kicker">Code</p>
+							<h2>GitHub / Code</h2>
+						</div>
+						<a
+							href="https://github.com/kinthedev"
+							target="_blank"
+							rel="noreferrer"
+							class="github-link">
+							View profile
+						</a>
+					</div>
+
+					<div class="github-layout">
+						<div class="github-activity-panel">
+							<div class="github-profile">
+								<div class="profile-avatar" aria-hidden="true">K</div>
+								<div>
+									<p class="github-label">Profile</p>
+									<h3>kinthedev</h3>
+								</div>
+							</div>
+
+							<div class="github-stats" id="github-stats">
+								<div class="stat-box"><span>Repos</span><strong>—</strong></div>
+								<div class="stat-box"><span>Followers</span><strong>—</strong></div>
+								<div class="stat-box"><span>Following</span><strong>—</strong></div>
+							</div>
+
+							<div
+								class="activity-graph"
+								id="activity-graph"
+								aria-label="GitHub activity">
+								<div class="activity-node"><span>live</span></div>
+								<div class="activity-node"><span>build</span></div>
+								<div class="activity-node"><span>ship</span></div>
+								<div class="activity-node"><span>code</span></div>
+								<div class="activity-node"><span>deploy</span></div>
+								<div class="activity-node"><span>iterate</span></div>
+								<div class="activity-node"><span>test</span></div>
+								<div class="activity-node"><span>refine</span></div>
+							</div>
+						</div>
+
+						<div class="github-repos-panel">
+							<div class="github-subhead">
+								<span>Selected repositories</span>
+								<p id="github-note">Loading public repositories…</p>
+							</div>
+							<div class="repo-grid" id="repo-grid"></div>
+						</div>
+					</div>
+				</div>
+			</section>
+
+			<section class="mini-game section" id="play">
+				<div class="section-index">08 / Mini arcade</div>
+
+				<div class="mini-game-shell reveal-block">
+					<div class="mini-game-copy">
+						<p class="section-kicker">Pause</p>
+						<h2>KIN // MINI ARCADE</h2>
+						<p>Take a break from judging my code.</p>
+					</div>
+
+					<div class="mini-game-panel">
+						<div class="mini-game-topbar">
+							<div class="mini-game-scoreboard">
+								<span>Score <strong id="mini-score">0</strong></span>
+								<span>Best <strong id="mini-best">0</strong></span>
+							</div>
+							<div class="mini-game-controls">
+								<button id="mini-play-btn" type="button">Play</button>
+								<button id="mini-sound-btn" type="button">Sound on</button>
+							</div>
+						</div>
+
+						<canvas
+							id="mini-game-canvas"
+							width="640"
+							height="300"
+							aria-label="KIN mini arcade game"></canvas>
+
+						<div class="mini-game-status" id="mini-status">Press play to begin.</div>
+					</div>
+				</div>
+			</section>
+
+			<section class="contact section" id="contact">
+				<div class="section-index">09 / Contact</div>
+
+				<div class="contact-shell reveal-block">
+					<div class="contact-line">
+						<p class="section-kicker">Available</p>
+						<h2>Let’s build something interesting.</h2>
+					</div>
+
+					<div class="contact-links" aria-label="Contact links">
+						<a href="https://github.com/kinthedev" target="_blank" rel="noreferrer"
+							>GitHub</a
+						>
+						<a href="https://www.linkedin.com" target="_blank" rel="noreferrer"
+							>LinkedIn</a
+						>
+						<a href="https://dribbble.com" target="_blank" rel="noreferrer"
+							>Dribbble</a
+						>
+						<a href="mailto:hello@kin.dev">Email</a>
+					</div>
+				</div>
+			</section>
+		</main>
+
+		<footer class="site-footer">
+			<div>KIN</div>
+			<div>Full-stack developer</div>
+			<div>Built for product thinking and interaction.</div>
+		</footer>
+
+		<aside class="music-player" aria-label="Music player">
+			<div class="music-header">
+				<div class="now-playing-indicator" aria-hidden="true"></div>
+				<div class="track-meta">
+					<span class="track-title">Night Circuit</span>
+					<span class="track-artist">KIN</span>
+				</div>
+				<button
+					class="music-panel-toggle"
+					type="button"
+					aria-label="Toggle music panel">
+					Hide
+				</button>
+				<button class="music-toggle" type="button" aria-label="Play or pause music">
+					Play
+				</button>
+			</div>
+
+			<div class="music-body">
+				<div class="visualizer" aria-hidden="true">
+					<span class="bar"></span>
+					<span class="bar"></span>
+					<span class="bar"></span>
+					<span class="bar"></span>
+					<span class="bar"></span>
+					<span class="bar"></span>
+					<span class="bar"></span>
+					<span class="bar"></span>
+					<span class="bar"></span>
+					<span class="bar"></span>
+					<span class="bar"></span>
+					<span class="bar"></span>
+				</div>
+
+				<div class="music-controls">
+					<button class="music-step prev" type="button" aria-label="Previous track">
+						Prev
+					</button>
+					<div class="time-wrap">
+						<span class="time-current">0:00</span>
+						<input
+							type="range"
+							min="0"
+							max="100"
+							value="0"
+							aria-label="Track progress" />
+						<span class="time-total">0:28</span>
+					</div>
+					<button class="music-step next" type="button" aria-label="Next track">
+						Next
+					</button>
+				</div>
+
+				<label class="volume-wrap" aria-label="Volume control">
+					<span>Volume</span>
+					<input type="range" min="0" max="100" value="55" class="volume-slider" />
+				</label>
+			</div>
+		</aside>
+
+		<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+		<script src="script.js"></script>
+	</body>
+</html>
